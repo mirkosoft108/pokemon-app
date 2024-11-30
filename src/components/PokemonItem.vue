@@ -39,7 +39,7 @@ const favorite = ref(props.isFavorite);
     border-radius: 8px;
     padding: 0 12px;
     box-sizing: border-box;
-    height: 60px;
+    min-height: 60px;
 }
 
 .pokemon-name {

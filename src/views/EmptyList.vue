@@ -20,12 +20,18 @@
   
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import SearchInput from '../components/SearchInput.vue';
+import { usePokemonStore } from '../stores/pokemonStore.js';
 
 const search = ref('');
+const pokemonStore = usePokemonStore();
+const router = useRouter();
 
 const goHome = () => {
-    console.log('Navigating back home...');
+    pokemonStore.pokemonList = [];
+    pokemonStore.offset = 0;
+    router.push('/list'); 
 };
 </script>
   
@@ -59,6 +65,7 @@ const goHome = () => {
     width: 155px;
     height: 50px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 @media (min-width: 1152px) {

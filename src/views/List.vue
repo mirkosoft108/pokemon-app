@@ -22,8 +22,6 @@
                 class="load-more-button"> 
                 Load More
             </button>
-
-            
         </div>
 
         <BottomNav
@@ -71,6 +69,8 @@ const handleFavoritesClick = () => {
 };
 
 onMounted(async () => {
+    pokemonStore.pokemonList = [];
+    pokemonStore.offset = 0;
     await pokemonStore.fetchPokemons()
 });
 

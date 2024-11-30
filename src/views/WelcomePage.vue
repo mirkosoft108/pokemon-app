@@ -17,13 +17,17 @@
 </template>
 
 <script setup>
-    import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { usePokemonStore } from '../stores/pokemonStore.js';
 
-    const router = useRouter();
+const router = useRouter();
+const pokemonStore = usePokemonStore();
 
-    const startPokedex = () => {
-        router.push('/list'); 
-    };
+const startPokedex = () => {
+    pokemonStore.pokemonList = [];
+    pokemonStore.offset = 0;
+    router.push('/list'); 
+};
 </script>
 
 <style scoped>
