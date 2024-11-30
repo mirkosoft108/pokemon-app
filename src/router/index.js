@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import WelcomePage from '../views/WelcomePage.vue'
-import Loading from '../views/Loading.vue'
 import EmptyList from '../views/EmptyList.vue'
+import List from '../views/List.vue'
 
 const routes = [
   {
@@ -10,15 +10,21 @@ const routes = [
     component: WelcomePage
   },
   {
-    path: '/loading',
-    name: 'loading',
-    component: Loading
-  },
-  {
     path: '/empty-list',
     name: 'empty-list',
     component: EmptyList
+  },
+  {
+    path: '/list',
+    name: 'list',
+    component: List
+  },
+  {
+    path: '/fav-list',
+    name: 'fav-list',
+    component: List
   }
+
 ]
 
 const router = createRouter({

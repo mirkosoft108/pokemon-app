@@ -17,8 +17,12 @@
 </template>
 
 <script setup>
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
+
     const startPokedex = () => {
-        console.log("Starting the Pokedex...");
+        router.push('/list'); 
     };
 </script>
 
@@ -84,7 +88,6 @@
 }
 
 @media (min-width: 1152px) {
-    .welcome-content {}
 
     .welcome-title {
         width: 570px;
@@ -94,7 +97,6 @@
         width: 570px;
     }
 
-    .welcome-button {}
 }
 </style>
   

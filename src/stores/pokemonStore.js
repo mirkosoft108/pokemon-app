@@ -7,22 +7,30 @@ export const usePokemonStore = defineStore('pokemon', () => {
   const selectedPokemon = ref(null);
   const isLoading = ref(false);
   const error = ref(null);
+  const limit = ref(10);
+  const offset = ref(0);
 
-  const fetchPokemons = async (limit = 50) => {
+  const fetchPokemons = async () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const results = await getPokemons(limit);
-      pokemonList.value = results.map((p) => ({
-        name: p.name,
-        url: p.url,
-      }));
+      const results = await getPokemons(limit.value, offset.value);
+      pokemonList.value.push(
+        ...results.map((p) => ({
+          name: capitalize(p.name),
+          url: p.url,
+        }))
+      );
     } catch (err) {
-      error.value = 'Error al cargar la lista de Pokémon.';
+      error.value = 'Error while fetching pokemons.';
       console.error(err);
     } finally {
       isLoading.value = false;
     }
+  };
+
+  const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   const fetchPokemonDetails = async (name) => {
@@ -31,7 +39,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     try {
       selectedPokemon.value = await getPokemonDetails(name);
     } catch (err) {
-      error.value = `Error al cargar los detalles de ${name}.`;
+      error.value = `Error while fetching ${name} details.`;
       console.error(err);
     } finally {
       isLoading.value = false;
@@ -43,6 +51,8 @@ export const usePokemonStore = defineStore('pokemon', () => {
     selectedPokemon,
     isLoading,
     error,
+    limit,
+    offset,
     fetchPokemons,
     fetchPokemonDetails,
   };

@@ -1,17 +1,9 @@
 <template>
     <div class="empty-list-layout">
-        <q-input
-            outlined
-            color="red-4"
-            dense
-            v-model="search"
-            placeholder="Search"
-            class="search-input"
-        >
-            <template v-slot:prepend>
-                <q-icon name="search" color="grey-6"/>
-            </template>
-        </q-input>
+        <SearchInput 
+            v-model="search" 
+            placeholder="Search"  
+        />
 
         <div class="empty-content">
             <h1 class="title">Uh-oh!</h1>
@@ -27,13 +19,14 @@
 </template>
   
 <script setup>
-    import { ref } from 'vue';
+import { ref } from 'vue';
+import SearchInput from '../components/SearchInput.vue';
 
-    const search = ref('');
+const search = ref('');
 
-    const goHome = () => {
-        console.log('Navigating back home...');
-    };
+const goHome = () => {
+    console.log('Navigating back home...');
+};
 </script>
   
 <style scoped>
@@ -48,19 +41,11 @@
     box-sizing: border-box;
 }
 
-.search-input {
-    margin-top: 35px;
-    min-width: 315px;
-    height: auto;
-    border-radius: 12px;
-}
-
 .title {
     margin-top: 45px;
     font-size: 36px;
     font-weight: 700;
     line-height: 43.2px;
-    align: center;
     color: #353535; 
 }
 
@@ -68,7 +53,6 @@
     font-size: 20px;
     color: #5E5E5E;
     line-height: 30px;
-    align: center;
 }
 
 .go-back-button {
@@ -78,17 +62,9 @@
 }
 
 @media (min-width: 1152px) {
-  .empty-list-layout {}
-
   .search-input {
     width: 570px;
   }
-
-  .title {}
-
-  .description {}
-
-  .go-back-button {}
 }
 </style>
   
