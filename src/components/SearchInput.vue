@@ -6,6 +6,7 @@
         color="red-4"
         @update:model-value="updateValue"
         class="search-input"
+        @keyup.enter="onEnter"
     >
         <template v-slot:prepend>
             <q-icon name="search" color="grey-6" />
@@ -22,7 +23,11 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const onEnter = () => {
+    emit('enter', props.modelValue);
+};
+
+const emit = defineEmits(['update:modelValue', 'enter']);
 
 const updateValue = (newValue) => {
     emit('update:modelValue', newValue);

@@ -1,10 +1,15 @@
 <template>
-    <div :class="['pokemon-card', { favorite }]">
-        <span class="pokemon-name">{{ name }}</span>
+    <div :class="['pokemon-card', { favorite: isFavorite }]">
+        <span 
+            class="pokemon-name" 
+            @click="emit('name-clicked', name)">
+            {{ name }}
+        </span>
         <img
-            :src="favorite ? starFilled : starEmpty"
+            :src="isFavorite ? starFilled : starEmpty"
             alt="Favorite Icon"
             class="favorite-icon"
+            @click="toggleFavorite"
         />
     </div>
 </template>
@@ -25,7 +30,12 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:isFavorite']);
+const toggleFavorite = () => {
+    emit('favorite-toggled', { name: props.name, isFavorite: !props.isFavorite });
+};
+
+const emit = defineEmits(['name-clicked', 'favorite-toggled']);
+
 const favorite = ref(props.isFavorite);
 
 </script>

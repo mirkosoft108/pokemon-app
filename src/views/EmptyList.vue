@@ -1,8 +1,11 @@
 <template>
-    <div class="empty-list-layout">
+    <div
+        v-if="!pokemonStore.isLoading" 
+        class="empty-list-layout">
         <SearchInput 
-            v-model="search" 
+            v-model="pokemonStore.search" 
             placeholder="Search"  
+            @enter="searchAndRedirect()"
         />
 
         <div class="empty-content">
@@ -16,23 +19,32 @@
             />
         </div>
     </div>
+    <div
+        v-if="pokemonStore.isLoading"  
+        class="loading-layout">
+        <img class="loading-image" src="../assets/Loader.svg" alt="Pokeball" />
+    </div>
 </template>
   
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SearchInput from '../components/SearchInput.vue';
 import { usePokemonStore } from '../stores/pokemonStore.js';
 
-const search = ref('');
 const pokemonStore = usePokemonStore();
 const router = useRouter();
 
 const goHome = () => {
-    pokemonStore.pokemonList = [];
-    pokemonStore.offset = 0;
     router.push('/list'); 
 };
+
+const searchAndRedirect = async () => {
+    await pokemonStore.fetchPokemon(true,false);
+    if (pokemonStore.pokemonList.length > 0) {
+        router.push('/list');
+    }
+};
+
 </script>
   
 <style scoped>
@@ -44,7 +56,6 @@ const goHome = () => {
     justify-content: flex-start;
     width: 100%;
     height: 100vh;
-    box-sizing: border-box;
 }
 
 .title {
@@ -66,6 +77,21 @@ const goHome = () => {
     height: 50px;
     border-radius: 8px;
     cursor: pointer;
+}
+
+.loading-layout {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white; 
+    overflow: hidden; 
+}
+
+.loading-image {
+    width: 106px;
+    height: 106px;
 }
 
 @media (min-width: 1152px) {

@@ -28,6 +28,11 @@ const updateViewport = () => {
 
 const setActive = (button) => {
     activeButton.value = button;
+    if (button === 'all') {
+        emit('allClick');
+    } else if (button === 'favorites') {
+        emit('favoritesClick'); 
+    }
 };
 
 onMounted(() => {
@@ -37,6 +42,9 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('resize', updateViewport);
 });
+
+const emit = defineEmits(['allClick', 'favoritesClick']);
+
 </script>
 
 <style scoped>

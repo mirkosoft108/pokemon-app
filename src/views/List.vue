@@ -3,8 +3,9 @@
         v-if="!pokemonStore.isLoading"
         class="list-layout">
         <SearchInput 
-            v-model="search" 
+            v-model="pokemonStore.search" 
             placeholder="Search"  
+            @enter="pokemonStore.fetchPokemon(true,false)"
         />
 
         <div class="pokemon-list">
@@ -13,10 +14,12 @@
                 :key="index"
                 :name="pokemon.name"
                 :isFavorite="pokemon.isFavorite"
+                @name-clicked="logPokemonName"
+                @favorite-toggled="logFavoriteToggle"
             />
 
             <button 
-                v-if="!pokemonStore.isLoading" 
+                v-if="!pokemonStore.isLoading && pokemonStore.filterTypeSelected === 'all'"  
                 ref="loadMoreButton"
                 @click="loadMorePokemons" 
                 class="load-more-button"> 
@@ -25,8 +28,8 @@
         </div>
 
         <BottomNav
-            @allClick="handleAllClick"
-            @favoritesClick="handleFavoritesClick"
+            @allClick="pokemonStore.getFilteredPokemons('all')"
+            @favoritesClick="pokemonStore.getFilteredPokemons('favorites');"
         />
         
     </div>
@@ -46,12 +49,10 @@ import PokemonItem from '../components/PokemonItem.vue';
 import BottomNav from '../components/BottomNav.vue';
 
 const pokemonStore = usePokemonStore();
-const search = ref('');
 const loadMoreButton = ref(null);
 
 const loadMorePokemons = async () => {
-    pokemonStore.offset += 10;
-    await pokemonStore.fetchPokemons();
+    await pokemonStore.fetchMorePokemons();
 
     await nextTick();
 
@@ -60,18 +61,22 @@ const loadMorePokemons = async () => {
     }
 };
 
-const handleAllClick = () => {
-    console.log('Navigating to All Pokemon...');
+const logPokemonName = (name) => {
+    console.log(`Pokemon name clicked: ${name}`);
 };
 
-const handleFavoritesClick = () => {
-    console.log('Navigating to Favorites...');
+const logFavoriteToggle = ({ name, isFavorite }) => {
+    pokemonStore.toggleFavorite(name);
+
+    if (pokemonStore.filterTypeSelected === 'favorites') {
+        pokemonStore.getFilteredPokemons('favorites');
+    }
 };
 
 onMounted(async () => {
-    pokemonStore.pokemonList = [];
-    pokemonStore.offset = 0;
-    await pokemonStore.fetchPokemons()
+    if (pokemonStore.pokemonList.length === 0) {
+        await pokemonStore.fetchPokemons()
+    } 
 });
 
 </script>
@@ -85,8 +90,6 @@ onMounted(async () => {
     justify-content: flex-start;
     width: 100%;
     height: 100vh;
-    box-sizing: border-box;
-    height: 100vh; 
     overflow: hidden; 
 }
 
@@ -109,10 +112,13 @@ onMounted(async () => {
     margin: 16px 0;
     padding: 8px 16px;
     border: none;
-    border-radius: 8px;
     background-color: #f22539;
     color: white;
-    font-size: 16px;
+    border-radius: 24px;
+    margin: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -140,14 +146,12 @@ onMounted(async () => {
     align-items: center;
     background-color: white; 
     overflow: hidden; 
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
 }
 
 .loading-image {
     width: 106px;
     height: 106px;
 }
+
 </style>
   
