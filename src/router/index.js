@@ -18,11 +18,6 @@ const routes = [
     path: '/list',
     name: 'list',
     component: List
-  },
-  {
-    path: '/fav-list',
-    name: 'fav-list',
-    component: List
   }
 
 ]
