@@ -43,7 +43,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     isLoading.value = true;
   
     try {
-      if (!search.value.trim()) {
+      if (!search.value.trim() && !forDetails) {
     
         pokemonList.value = [...allPokemonList.value];
         isLoading.value = false;
@@ -54,19 +54,22 @@ export const usePokemonStore = defineStore('pokemon', () => {
         p.name.toLowerCase() === search.value.toLowerCase()
       );
   
-      if (existingPokemon) {
+      if (existingPokemon && !forDetails) {
       
         if (forList) {
           pokemonList.value = [...allPokemonList.value.filter(p => p.name === existingPokemon.name)];
         }
-        if (forDetails) {
-          selectedPokemon.value = existingPokemon;
-        }
+        
         isLoading.value = false;
         return;
       }
- 
-      const response = await getPokemonDetails(search.value.toLowerCase());
+      
+      let toSearch = search.value.toLowerCase();
+      if (forDetails) {
+        toSearch = forDetails.toLowerCase();
+      }
+
+      const response = await getPokemonDetails(toSearch);
       const newPokemon = { name: capitalize(response.name), isFavorite: false };
       allPokemonList.value.push(newPokemon);
   
@@ -74,6 +77,18 @@ export const usePokemonStore = defineStore('pokemon', () => {
         pokemonList.value = [...allPokemonList.value.filter(p => p.name === newPokemon.name)];
       }
       if (forDetails) {
+
+        let isFavorite = allPokemonList.value.find(p => (p.name).toLowerCase() === response.name)?.isFavorite || false;
+
+        const newPokemon = {
+          image: response.sprites.front_default, 
+          name: capitalize(response.name),
+          weight: response.weight, 
+          height: response.height, 
+          types: response.types.map(typeObj => capitalize(typeObj.type.name)).join(', '),
+          isFavorite: isFavorite,
+        };
+
         selectedPokemon.value = newPokemon;
       }
   

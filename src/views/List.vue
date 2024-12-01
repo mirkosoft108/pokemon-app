@@ -31,6 +31,18 @@
             @allClick="pokemonStore.getFilteredPokemons('all')"
             @favoritesClick="pokemonStore.getFilteredPokemons('favorites');"
         />
+
+        <PokemonCard
+            v-if="showDialog"
+            :isOpen="showDialog"
+            :image="pokemonStore.selectedPokemon.image"
+            :name="pokemonStore.selectedPokemon.name"
+            :weight="pokemonStore.selectedPokemon.weight"
+            :height="pokemonStore.selectedPokemon.height"
+            :types="pokemonStore.selectedPokemon.types"
+            :isFavorite="pokemonStore.selectedPokemon.isFavorite"
+            @update:isOpen="showDialog = $event"
+        />
         
     </div>
     <div
@@ -47,6 +59,9 @@ import { usePokemonStore } from '../stores/pokemonStore.js';
 import SearchInput from '../components/SearchInput.vue';
 import PokemonItem from '../components/PokemonItem.vue';
 import BottomNav from '../components/BottomNav.vue';
+import PokemonCard from '../components/PokemonCard.vue';
+
+const showDialog = ref(false);
 
 const pokemonStore = usePokemonStore();
 const loadMoreButton = ref(null);
@@ -61,8 +76,11 @@ const loadMorePokemons = async () => {
     }
 };
 
-const logPokemonName = (name) => {
-    console.log(`Pokemon name clicked: ${name}`);
+const logPokemonName = async (name) => {
+
+    await pokemonStore.fetchPokemon(false,name);
+
+    showDialog.value = true;
 };
 
 const logFavoriteToggle = ({ name, isFavorite }) => {
